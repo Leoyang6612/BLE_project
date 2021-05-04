@@ -3,11 +3,15 @@
     package="com.doma.ble_project"
     android:versionCode="1"
     android:versionName="1.0">
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -22,7 +26,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ScanActivity"
+        <activity
+            android:name=".ScanActivity"
             android:label="Scan"
             android:parentActivityName=".StartActivity"
             android:theme="@style/AppTheme">
@@ -30,7 +35,8 @@
         </activity>
 
 
-        <activity android:name=".DeviceControlActivity"
+        <activity
+            android:name=".DeviceControlActivity"
             android:label="Scan"
             android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".StartActivity"
@@ -38,8 +44,9 @@
 
         </activity>
 
-        <service android:name=".BluetoothLeService"
-            android:enabled="true"/>
+        <service
+            android:name=".BluetoothLeService"
+            android:enabled="true" />
 
     </application>
 

@@ -1,11 +1,7 @@
 package com.doma.ble_project;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -13,20 +9,15 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -37,6 +28,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,17 +55,12 @@ public class ScanActivity extends AppCompatActivity {
     private final static String TAG = ScanActivity.class.getSimpleName();
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
-    {
-        if(requestCode == PERMISSION_REQUEST_CODE)
-        {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
             //Do something based on grantResults
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "coarse location permission granted");
-            }
-            else
-            {
+            } else {
                 Log.d(TAG, "coarse location permission denied");
             }
         }
@@ -85,11 +72,10 @@ public class ScanActivity extends AppCompatActivity {
         setContentView(R.layout.scan_activity);
         final Intent intent = getIntent();
         ID = intent.getStringExtra(ID_NAME);
-        Log.d("TAG","ID = "+ID);
+        Log.d("TAG", "ID = " + ID);
 
         Log.d(TAG, "Request Location Permissions:");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_CODE);
         }
 
@@ -117,7 +103,7 @@ public class ScanActivity extends AppCompatActivity {
         //2.在 java 程式中加入Button 物件，並使用"findViewById"建立對應的Button名稱。
         //3.新增"setOnClickListener"方法來監聽按鈕狀態。
         //4.在"setOnClickListener"中設定當按鈕觸發時所執行的動作。
-        btnScan = (Button)findViewById(R.id.scan);
+        btnScan = (Button) findViewById(R.id.scan);
         btnScan.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
@@ -125,7 +111,7 @@ public class ScanActivity extends AppCompatActivity {
                 scanLeDevice(true);
             }
         });
-        listViewLE = (ListView)findViewById(R.id.lelist);
+        listViewLE = (ListView) findViewById(R.id.lelist);
 
         listBluetoothDevice = new ArrayList<>();
         adapterLeScanResult = new ArrayAdapter<BluetoothDevice>(this, android.R.layout.simple_list_item_1, listBluetoothDevice);
@@ -136,7 +122,7 @@ public class ScanActivity extends AppCompatActivity {
     }
 
     AdapterView.OnItemClickListener scanResultOnItemClickListener =
-            new AdapterView.OnItemClickListener(){
+            new AdapterView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -159,7 +145,7 @@ public class ScanActivity extends AppCompatActivity {
                     intent.setClass(ScanActivity.this, DeviceControlActivity.class);
                     intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, device.getName());
                     intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
-                    intent.putExtra(DeviceControlActivity.ID_NAME,ID);
+                    intent.putExtra(DeviceControlActivity.ID_NAME, ID);
                     if (mScanning) {
                         mBluetoothAdapter.stopLeScan(mLeScanCallback);
                         mScanning = false;
@@ -169,10 +155,10 @@ public class ScanActivity extends AppCompatActivity {
                 }
             };
 
-    private String getBTDevieType(BluetoothDevice d){
+    private String getBTDevieType(BluetoothDevice d) {
         String type = "";
 
-        switch (d.getType()){
+        switch (d.getType()) {
             case BluetoothDevice.DEVICE_TYPE_CLASSIC:
                 type = "DEVICE_TYPE_CLASSIC";
                 break;
@@ -228,7 +214,7 @@ public class ScanActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void getBluetoothAdapterAndLeScanner(){
+    private void getBluetoothAdapterAndLeScanner() {
         // Get BluetoothAdapter and BluetoothLeScanner.
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
@@ -289,7 +275,7 @@ public class ScanActivity extends AppCompatActivity {
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
             super.onBatchScanResults(results);
-            for(ScanResult result : results){
+            for (ScanResult result : results) {
                 addBluetoothDevice(result.getDevice());
             }
         }
@@ -302,8 +288,8 @@ public class ScanActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         }
 
-        private void addBluetoothDevice(BluetoothDevice device){
-            if(!listBluetoothDevice.contains(device)){
+        private void addBluetoothDevice(BluetoothDevice device) {
+            if (!listBluetoothDevice.contains(device)) {
                 listBluetoothDevice.add(device);
                 listViewLE.invalidateViews();
             }
@@ -322,7 +308,7 @@ public class ScanActivity extends AppCompatActivity {
         }
 
         public void addDevice(BluetoothDevice device) {
-            if(!mLeDevices.contains(device)) {
+            if (!mLeDevices.contains(device)) {
                 mLeDevices.add(device);
             }
         }

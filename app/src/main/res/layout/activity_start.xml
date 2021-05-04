@@ -36,6 +36,6 @@
         app:layout_constraintTop_toTopOf="parent"
         android:onClick="buttonOnClick"
         android:src="@drawable/button"
-        android:text="Start"/>
+        android:text="Start" />
 
 </android.support.constraint.ConstraintLayout>

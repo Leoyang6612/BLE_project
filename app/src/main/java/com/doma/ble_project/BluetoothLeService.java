@@ -28,7 +28,7 @@ public class BluetoothLeService extends Service {
     private static BluetoothAdapter mBluetoothAdapter;
     private String mBluetoothDeviceAddress;
     private static BluetoothGatt mBluetoothGatt;
-    boolean  enabled;
+    boolean enabled;
 
 
     private int mConnectionState = STATE_DISCONNECTED;
@@ -115,19 +115,17 @@ public class BluetoothLeService extends Service {
                                  final BluetoothGattCharacteristic characteristic) {
         final Intent intent = new Intent(action);
 
-        if (UUID_Nordic_UART.equals(characteristic.getUuid())){
-            Log.d("TAG","UUID_Nordic_UART");
-        }
-
-        else {
+        if (UUID_Nordic_UART.equals(characteristic.getUuid())) {
+            Log.d("TAG", "UUID_Nordic_UART");
+        } else {
             // For all other profiles, writes the data formatted in HEX.
             final byte[] data = characteristic.getValue();
-            Log.d("TAG","data = " + data);
+            Log.d("TAG", "data = " + data);
             if (data != null && data.length > 0) {
                 final StringBuilder stringBuilder = new StringBuilder(data.length);
-                for(byte byteChar : data)
+                for (byte byteChar : data)
                     stringBuilder.append(String.format("%02X ", byteChar));
-                intent.putExtra(EXTRA_DATA, new String(data) + "\n" );
+                intent.putExtra(EXTRA_DATA, new String(data) + "\n");
             }
         }
         sendBroadcast(intent);
@@ -184,11 +182,10 @@ public class BluetoothLeService extends Service {
      * Connects to the GATT server hosted on the Bluetooth LE device.
      *
      * @param address The device address of the destination device.
-     *
      * @return Return true if the connection is initiated successfully. The connection result
-     *         is reported asynchronously through the
-     *         {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
-     *         callback.
+     * is reported asynchronously through the
+     * {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
+     * callback.
      */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean connect(final String address) {
@@ -259,7 +256,6 @@ public class BluetoothLeService extends Service {
      */
 
 
-
     public void writeCharacteristic(BluetoothGattCharacteristic characteristic, String data) {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.d("TAG", "BluetoothAdapter not initialized");
@@ -294,11 +290,11 @@ public class BluetoothLeService extends Service {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
         }
-        boolean isEnableNotification =  mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
-        if(isEnableNotification) {
+        boolean isEnableNotification = mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
+        if (isEnableNotification) {
             List<BluetoothGattDescriptor> descriptorList = characteristic.getDescriptors();
-            if(descriptorList != null && descriptorList.size() > 0) {
-                for(BluetoothGattDescriptor descriptor : descriptorList) {
+            if (descriptorList != null && descriptorList.size() > 0) {
+                for (BluetoothGattDescriptor descriptor : descriptorList) {
                     descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                     mBluetoothGatt.writeDescriptor(descriptor);
                 }
@@ -318,13 +314,13 @@ public class BluetoothLeService extends Service {
     }
 
 
-    public boolean setMTU(int mtu){
-        Log.d("TAG","setMTU "+mtu);
+    public boolean setMTU(int mtu) {
+        Log.d("TAG", "setMTU " + mtu);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            if(mtu>20){
-                boolean ret =   mBluetoothGatt.requestMtu(mtu);
-                Log.d("TAG","requestMTU "+mtu+" ret="+ret);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (mtu > 20) {
+                boolean ret = mBluetoothGatt.requestMtu(mtu);
+                Log.d("TAG", "requestMTU " + mtu + " ret=" + ret);
                 return ret;
             }
         }
