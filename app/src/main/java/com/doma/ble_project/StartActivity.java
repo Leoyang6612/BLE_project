@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -16,11 +17,46 @@ public class StartActivity extends Activity {
     String data = "0";
     String IDnum = "0";
 
+    //ryan
+    private Button
+            startButton,
+            stopButton;
+    //ryan
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         Log.d("TAG", "onCreate");
+
+        //ryan
+        startButton = findViewById(R.id.button_start_record);
+        stopButton = findViewById(R.id.button_stop_record);
+        //ryan
+
+        //ryan
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                stopButton.setEnabled(true);
+                startButton.setEnabled(false);
+                //startRecording();
+                //startRecognition();
+            }
+        });
+
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                stopButton.setEnabled(false);
+                startButton.setEnabled(true);
+                //stopRecording();
+                //stopRecognition();
+            }
+        });
+        //ryan
 
     }
 
@@ -53,7 +89,6 @@ public class StartActivity extends Activity {
         super.onResume();
         Log.d("TAG", "onDestory");
     }
-
 
     public void buttonOnClick(View view) {
         //Toast toast = Toast.makeText(this, "starting", Toast.LENGTH_SHORT);

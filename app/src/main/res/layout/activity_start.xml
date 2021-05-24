@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
@@ -7,35 +7,86 @@
     android:layout_height="match_parent"
     tools:layout_editor_absoluteY="81dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="5">
 
-    <Button
-        android:id="@+id/btn_ID_Login"
-        android:layout_width="106dp"
-        android:layout_height="61dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:onClick="IDLoginOnClick"
-        android:text="ID Login"
-        app:layout_constraintBottom_toTopOf="@+id/btn_start"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.964" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <Button
+                android:id="@+id/button_start_record"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="20dp"
+                android:layout_weight=".5"
+                android:text="record"/>
+
+            <Button
+                android:id="@+id/button_stop_record"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="20dp"
+                android:layout_weight=".5"
+                android:text="stop"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.6"
+            android:orientation="horizontal">
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.8"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <Button
+                android:id="@+id/btn_ID_Login"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:text="ID Login"
+                android:onClick="IDLoginOnClick"
+                android:layout_weight="0.3">
+            </Button>
 
 
-    <ImageButton
-        android:id="@+id/btn_start"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:onClick="buttonOnClick"
-        android:src="@drawable/button"
-        android:text="Start" />
 
-</android.support.constraint.ConstraintLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.8"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <ImageButton
+                android:id="@+id/btn_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:onClick="buttonOnClick"
+                android:src="@drawable/button"
+                android:text="Start"
+                android:layout_weight="0.3">
+            </ImageButton>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>
