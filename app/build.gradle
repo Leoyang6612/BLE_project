@@ -44,9 +44,14 @@ android {
         targetSdkVersion 27
     }
 
-    compileOptions {
+    /*compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
+    }*/
+    //tflite
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
     }
 
     sourceSets {
@@ -61,4 +66,16 @@ android {
 
     }
 
+    //tflite
+    aaptOptions {
+        noCompress "tflite"
+    }
+
+}
+
+dependencies {
+    //tflite
+    implementation 'org.tensorflow:tensorflow-lite:2.2.0'
+    implementation 'org.tensorflow:tensorflow-lite-support:0.1.0-rc1'
+    implementation 'org.tensorflow:tensorflow-lite-metadata:0.1.0-rc1'
 }
