@@ -20,21 +20,6 @@
             android:orientation="horizontal"
             android:weightSum="1">
 
-            <Button
-                android:id="@+id/button_start_record"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="20dp"
-                android:layout_weight=".5"
-                android:text="record"/>
-
-            <Button
-                android:id="@+id/button_stop_record"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="20dp"
-                android:layout_weight=".5"
-                android:text="stop"/>
 
         </LinearLayout>
 
