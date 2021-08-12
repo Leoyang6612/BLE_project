@@ -116,11 +116,11 @@ public class BluetoothLeService extends Service {
         final Intent intent = new Intent(action);
 
         if (UUID_Nordic_UART.equals(characteristic.getUuid())) {
-            Log.d("TAG", "UUID_Nordic_UART");
+            Log.d("broadcastUpdate", "UUID_Nordic_UART");
         } else {
             // For all other profiles, writes the data formatted in HEX.
             final byte[] data = characteristic.getValue();
-            Log.d("TAG", "data = " + data);
+            Log.d("broadcastUpdate", "data = " + data);
             if (data != null && data.length > 0) {
                 final StringBuilder stringBuilder = new StringBuilder(data.length);
                 for (byte byteChar : data)
@@ -262,11 +262,13 @@ public class BluetoothLeService extends Service {
             return;
         }
 
-        Log.d("TAG", "characteristic " + characteristic.toString());
+
+        Log.d("TAG", "charaProp " + characteristic.getProperties());
         characteristic.setValue(data);
         Log.d("TAG", "data " + data);
 
         mBluetoothGatt.writeCharacteristic(characteristic);
+
     }
 
     /**

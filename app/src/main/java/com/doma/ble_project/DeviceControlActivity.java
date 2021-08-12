@@ -180,8 +180,8 @@ public class DeviceControlActivity extends Activity {
             int runtimer = Max_Try_Resend;
 
             public void run() {
-                Log.d("TAG", "Error_Num    " + Error_Num + " check_ack[Error_Num]     " + check_ack[Error_Num]);
-                Log.d("TAG", "error_num    " + error_num + " check_ack[error_num]     " + check_ack[error_num]);
+                Log.d("ResendTimer", "Error_Num    " + Error_Num + " check_ack[Error_Num]     " + check_ack[Error_Num]);
+                Log.d("ResendTimer", "error_num    " + error_num + " check_ack[error_num]     " + check_ack[error_num]);
                 if (runtimer > 0 && check_ack[error_num] == 1) {
                     for (i = 1; i <= packet_num; i++) {
                         Tx_data = 'A' + ID + DestinationIDnum + i + packet_num + error_num + Tx_buffer[i - 1];
@@ -294,24 +294,23 @@ public class DeviceControlActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
-                Log.d("TAG", "action:    ACTION_GATT_CONNECTED");
+                Log.d("BroadcastReceiver", "action:    ACTION_GATT_CONNECTED");
                 mConnected = true;
                 updateConnectionState(R.string.connected);
                 invalidateOptionsMenu();
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                Log.d("TAG", "action:    ACTION_GATT_DISCONNECTED");
+                Log.d("BroadcastReceiver", "action:    ACTION_GATT_DISCONNECTED");
                 mConnected = false;
                 updateConnectionState(R.string.disconnected);
                 invalidateOptionsMenu();
                 clearUI();
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-                Log.d("TAG", "action:    ACTION_GATT_SERVICES_DISCOVERED");
+                Log.d("BroadcastReceiver", "action:    ACTION_GATT_SERVICES_DISCOVERED");
                 // Show all the supported services and characteristics on the user interface.
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+                Log.d("BroadcastReceiver", "Collecting data");
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-                Log.d("TAG", "Collecting data");
-
             }
 
         }
@@ -334,7 +333,7 @@ public class DeviceControlActivity extends Activity {
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
         ID = intent.getStringExtra(ID_NAME);
-        Log.d("TAG", "ID:    " + ID);
+        Log.d("onCreate", "ID:    " + ID);
         // Sets up UI references.
         ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
         //mGattServicesList = (ExpandableListView) findViewById(R.id.gatt_services_list);
@@ -442,13 +441,13 @@ public class DeviceControlActivity extends Activity {
 
 
     public void enableNotify() {
-        //final BluetoothGattCharacteristic characteristic_TX ;
         final BluetoothGattCharacteristic characteristic;
         if (mGattCharacteristics.size() == 3) {
-            characteristic = mGattCharacteristics.get(2).get(1); //RX  //correct get(2).get(0)
+            characteristic = mGattCharacteristics.get(2).get(1); //RX  //correct get(2).get(0)  //TX Characteristic: property notify
             final int charaProp = characteristic.getProperties();
-            Log.d("TAG", "charaProp:" + charaProp);
+            Log.d("enableNotify", "charaProp:" + charaProp);
             if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {  //16
+                Log.d("enableNotify", "PROPERTY_NOTIFY");
                 mNotifyCharacteristic = characteristic;
                 mBluetoothLeService.setCharacteristicNotification(mNotifyCharacteristic, true);
                 mBluetoothLeService.setMTU(216);
@@ -504,15 +503,15 @@ public class DeviceControlActivity extends Activity {
             public void onClick(View v) {
 
                 final BluetoothGattCharacteristic characteristic = mGattCharacteristics.get(2).get(0); //correct get(2).get(0)->RX characteristic->phone send data to nordic //origin .get(2).get(1) -> charaProp ==16
-                Log.d("TAG", "characteristic=        " + characteristic);
+                Log.d("onClick", "characteristic=        " + characteristic);
                 final int charaProp = characteristic.getProperties();
-                Log.d("TAG", "charaProp :   " + charaProp);
+                Log.d("onClick", "charaProp :   " + charaProp);
                 String TX_buf;
                 //origin set charaProp == 12   //correct 12
                 if (charaProp == 12) {
                     int countbyte = 0, i, packetNum;
                     mWriteCharacteristic = characteristic;
-                    Log.d("TAG", "mWriteCharacteristic:      " + mWriteCharacteristic);
+                    Log.d("onClick", "mWriteCharacteristic:      " + mWriteCharacteristic);
                     if (editText.getText().toString().length() != 0) {
 
                         lastData = "";
@@ -522,7 +521,7 @@ public class DeviceControlActivity extends Activity {
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
-                        Log.d("TAG", "Data bytes (UTF-8) :" + countbyte + " bytes");
+                        Log.d("onClick", "Data bytes (UTF-8) :" + countbyte + " bytes");
 
 
                         for (i = 0; i < editText.getText().toString().length(); i++) {
@@ -530,7 +529,7 @@ public class DeviceControlActivity extends Activity {
                             lastData = lastData + String.valueOf(lastDatabuf);
                         }
                         //Log.d("TAG","Data length :"+TX_buf.length());
-                        Log.d("TAG", "lastData buffer:" + lastData);
+                        Log.d("onClick", "lastData buffer:" + lastData);
                         //Log.d("TAG","Rcv_Buf :" + Rcv_Buf[0] );
 
                         ReSend_buf = "";
@@ -546,15 +545,15 @@ public class DeviceControlActivity extends Activity {
                             ReSend_buf += editText.getText().toString().charAt(i);
                         }
                         ReSend_split = ReSend_buf.split("-&-");
-                        Log.d("TAG", "Total Packets = " + packetNum);
-                        Log.d("TAG", "ReSend_buf = " + ReSend_buf);
+                        Log.d("onClick", "Total Packets = " + packetNum);
+                        Log.d("onClick", "ReSend_buf = " + ReSend_buf);
 
 
                         for (i = 1; i <= packetNum; i++) {
                             TX_buf = 'A' + ID + DestinationIDnum + i + packetNum + Error_Num + ReSend_split[i - 1];
                             //mBluetoothLeService.writeCharacteristic(mWriteCharacteristic,encrypt(TX_buf)); //origin : (mWriteCharacteristic,TX_buf);
                             mBluetoothLeService.writeCharacteristic(mWriteCharacteristic, TX_buf);
-                            Log.d("TAG", "Tx_Buf = " + TX_buf);
+                            Log.d("onClick", "Tx_Buf = " + TX_buf);
                             //Log.d("TAG","encrypt Tx_Buf = "+ encrypt(TX_buf));
                             try {
                                 Thread.sleep(150);
@@ -563,15 +562,12 @@ public class DeviceControlActivity extends Activity {
                             }
                         }
 
-
-
                         /*TX_buf='A'+ID+DestinationIDnum+i+packetNum+'0'+ReSend_buf;
                         mBluetoothLeService.writeCharacteristic(mWriteCharacteristic,TX_buf);*/
 
                         //Log.d("TAG","Encrypt  buffer :  " + encrypt(lastData));
                         //Log.d("TAG","Encrypt length :"+encrypt(TX_buf).length());
                         //Log.d("TAG","Decrypt  buffer :  " + decrypt(encrypt(lastData)));
-
 
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
                         Date date = new Date(System.currentTimeMillis());
@@ -581,7 +577,7 @@ public class DeviceControlActivity extends Activity {
                         //檢查有沒有收到ACK  check the ACK is received or not, 1 = no ack
                         check_ack[Error_Num] = 1;
                         lastDate = date;
-                        Log.d("TAG", "check_ack[Error_Num] == 1");
+                        Log.d("onClick", "check_ack[Error_Num] == 1");
                         if (check_ack[Error_Num] == 1) {
                             try {                                                       //try 區塊用來監控預先認定會出現例外的程式碼
                                 ResendTimer.Resend(ReSend_buf, packetNum, Error_Num);
@@ -589,7 +585,7 @@ public class DeviceControlActivity extends Activity {
                                 e.printStackTrace();                                    //catch 區塊則是用來放置當例外真的在 try 區塊出現時，所設計並處理例外的程式碼，處理完後直接處理catch{}後的code
                             }
                         }
-                        Log.d("TAG", "Error_Num = " + Error_Num);
+                        Log.d("onClick", "Error_Num = " + Error_Num);
                         if (Error_Num < 9) {
                             Error_Num += 1;
                         } else {
@@ -614,7 +610,7 @@ public class DeviceControlActivity extends Activity {
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         if (mBluetoothLeService != null) {
             final boolean result = mBluetoothLeService.connect(mDeviceAddress);
-            Log.d(TAG, "Connect request result=" + result);
+            Log.d("onResume", "Connect request result=" + result);
         }
     }
 
@@ -654,18 +650,18 @@ public class DeviceControlActivity extends Activity {
         String ACK_buf;  //origin
 //        data = decrypt(data) ;
 //        Log.d("TAG","Decrypt DATA :        " + data);
-        Log.d("TAG", "displayData:  " + data);
-        Log.d("TAG", "ID:  " + ID);
-        Log.d("TAG", "data.charAt(0):  " + data.charAt(0));
-        Log.d("TAG", "data.charAt(1):  " + data.charAt(1));
-        Log.d("TAG", "data.charAt(2):  " + data.charAt(2));
-        Log.d("TAG", "data.charAt(3):  " + data.charAt(3));
-        Log.d("TAG", "data.length():  " + data.length());
+        Log.d("displayData", "displayData:  " + data);
+//        Log.d("displayData", "ID:  " + ID);
+//        Log.d("displayData", "data.charAt(0):  " + data.charAt(0));
+//        Log.d("displayData", "data.charAt(1):  " + data.charAt(1));
+//        Log.d("displayData", "data.charAt(2):  " + data.charAt(2));
+//        Log.d("displayData", "data.charAt(3):  " + data.charAt(3));
+//        Log.d("displayData", "data.length():  " + data.length());
         if (data != null) {
-            if (data.length() == 5 && data.charAt(0) == ID.charAt(0) && data.charAt(1) == 'A' && data.charAt(2) == 'C' && data.charAt(3) == 'K') {
-                check_ack[Error_Num - 1] = data.charAt(1); //暫時debug一直重送的問題 //應該要在送完後立刻讀取ack 不要等到Error_Num +1 了才讀取
-                Log.d("TAG", "data!=null ; check_ack[Error_Num-1](ACK) :  " + check_ack[Error_Num - 1]);
-            }
+//            if (data.length() == 5 && data.charAt(0) == ID.charAt(0) && data.charAt(1) == 'A' && data.charAt(2) == 'C' && data.charAt(3) == 'K') {
+//                check_ack[Error_Num - 1] = data.charAt(1); //暫時debug一直重送的問題 //應該要在送完後立刻讀取ack 不要等到Error_Num +1 了才讀取
+//                Log.d("displayData", "data!=null ; check_ack[Error_Num-1](ACK) :  " + check_ack[Error_Num - 1]);
+//            }
 
             //   if(data.length()>6)
             //Log.d("TAG","data[0]:  "+data.charAt(0));
@@ -676,35 +672,30 @@ public class DeviceControlActivity extends Activity {
                 packet_num = data.charAt(3);
                 packet_total = data.charAt(4);
                 errorNUM = data.charAt(5);
-                Log.d("TAG", "fromID :" + fromID);
-                Log.d("TAG", "myID :" + myID);
-                Log.d("TAG", "packet_num :" + packet_num);
-                Log.d("TAG", "packet_total :" + packet_total);
-                Log.d("TAG", "errorNUM :" + errorNUM);
+//                Log.d("displayData", "fromID :" + fromID);
+//                Log.d("displayData", "myID :" + myID);
+//                Log.d("displayData", "packet_num :" + packet_num);
+//                Log.d("displayData", "packet_total :" + packet_total);
+//                Log.d("displayData", "errorNUM :" + errorNUM);
 
                 if (myID == ID.charAt(0)) {
-
-
                     packetData = "";
-
-                    Log.d("TAG", "ID packetData.L :        " + packetData.length());
-                    Log.d("TAG", "PacketdataLength:   " + data.length());
-
+//                    Log.d("displayData", "ID packetData.L :        " + packetData.length());
+//                    Log.d("displayData", "PacketdataLength:   " + data.length());
                     for (i = 0; i < data.length() - 6; i++) {
                         final char packetdatabuf = data.charAt(6 + i);
                         packetData = packetData + String.valueOf(packetdatabuf);
                         //Log.d("TAG","packetdatabuf:"+packetdatabuf);
                     }
 
-                    Log.d("TAG", "packetData:" + packetData);
-                    Log.d("TAG", "PacketdataLength:   " + packetData.length());
-
+                    Log.d("displayData", "packetData:" + packetData);
+                    Log.d("displayData", "PacketdataLength:  " + packetData.length());
 
                     packetData = packetData.substring(0, packetData.length() - 1);
 
                     if (packetData.equals("ACK")) {
 
-                        Log.d("TAG", "ACK CHECK");
+                        Log.d("displayData", "ACK CHECK");
 
                         //lastData=arrayList.get(arrayList.size()-1);             //origin //
 
@@ -713,51 +704,58 @@ public class DeviceControlActivity extends Activity {
 
 
                         //arrayList.add(arrayList.size()-1,lastData + "&" + "read");
-                        //arrayList.remove(arrayList.size()-1);  //origin has
+                        arrayList.remove(arrayList.size()-1);  //origin has
                         arrayList.add("me&" + simpleDateFormat.format(lastDate) + "&" + lastData + "&" + ID + "&" + fromID + "&" + "Read");
 
                         listView.setAdapter(listAdapter);
                         lastData = "";
 
+                        check_ack[Error_Num - 1] = 0; //暫時debug一直重送的問題 //應該要在送完後立刻讀取ack 不要等到Error_Num +1 了才讀取
+                        Log.d("displayData-ACK", "check_ack[Error_Num-1](ACK) :  " + check_ack[Error_Num - 1]);
+
                     } else if (packet_num < packet_total) {
-                        Log.d("TAG", "packet_num < packet_total");
+                        Log.d("displayData", "packet_num < packet_total");
                         //收到的訊息暫時存在Buf
                         Rcv_Buf[packet_num - '0'] = packetData;
 
                     } else {
 
                         if (packet_num == packet_total) {
-                            Log.d("TAG", "packet_num == packet_total");
+                            //Log.d("displayData", "packet_num == packet_total");
                             Rcv_Buf[packet_num - '0'] = packetData;              // confirm it is in correct position(int)
-                            Log.d("TAG", "String Rcv_Data: " + Rcv_Buf[packet_num - '0']);
+                            Log.d("displayData", "packet_num - '0'"+ (packet_num - '0') + "String Rcv_Data: " + Rcv_Buf[packet_num - '0']);
                         }
 
                         //把存在Buf的訊息寫進String Rcv_Data
-                        Log.d("TAG", "把存在Buf的訊息寫進String Rcv_Data " + packet_total);
+                        Log.d("displayData", "把存在Buf的訊息寫進String Rcv_Data " + packet_total);
 
                         //packet_total is char need to conver to int so it needs to -'0'
+//                        for (i = 0; i < packet_total - '0'; i++) {
+//                            Rcv_Data += Rcv_Buf[i + 1];                           //first is Rcv_Buf[1] not Rcv_Buf[0] according to the above code
+//                            Log.d("displayData", "Rcv_Buf[i]: " + Rcv_Buf[i + 1] + String.valueOf(i) + packet_total);
+//                        }
                         for (i = 0; i < packet_total - '0'; i++) {
-                            Rcv_Data += Rcv_Buf[i + 1];                           //first is Rcv_Buf[1] not Rcv_Buf[0] according to the above code
-                            Log.d("TAG", "Rcv_Buf[i]: " + Rcv_Buf[i + 1] + String.valueOf(i) + packet_total);
+                            Rcv_Data += Rcv_Buf[i+1];
                         }
-                        Log.d("TAG", "String Rcv_Data: " + Rcv_Data);
-                        Log.d("TAG", "arrayList.add date...");
+
+                        Log.d("displayData", "String Rcv_Data: " + Rcv_Data);
+
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
 
                         Date date = new Date(System.currentTimeMillis());
 
                         arrayList.add("another&" + simpleDateFormat.format(date) + "&" + Rcv_Data + "&" + ID + "&" + fromID + "&" + "noRead");
-                        Log.d("TAG", "arrayList  " + arrayList);
+                        Log.d("displayData", "arrayList  " + arrayList);
                         listView.setAdapter(listAdapter);
 
                         mp.start();
                         //send ACK
-                        Log.d("TAG", "send ACK");
+                        Log.d("displayData", "send ACK");
                         ACK_buf = 'A' + ID + fromID + packet_num + packet_total + errorNUM + "ACK";
-                        Log.d("TAG", "ACK_buf: " + ACK_buf);
+                        Log.d("displayData", "ACK_buf: " + ACK_buf);
                         //mBluetoothLeService.writeCharacteristic(mWriteCharacteristic, encrypt(ACK_buf));   //origin has
-                        mBluetoothLeService.writeCharacteristic(mWriteCharacteristic, ACK_buf);     //new add 3/9
-                        Log.d("TAG", "ACK_buf: ");
+                        mBluetoothLeService.writeCharacteristic(mWriteCharacteristic, ACK_buf);     //new add 3/9  //error here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
                     }
 
                 }
@@ -778,7 +776,7 @@ public class DeviceControlActivity extends Activity {
         ArrayList<ArrayList<HashMap<String, String>>> gattCharacteristicData
                 = new ArrayList<ArrayList<HashMap<String, String>>>();
         mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
-        Log.d("TAG", "displayGattServices    mGattCharacteristics" + mGattCharacteristics);
+        Log.d("displayGattServices", "displayGattServices    mGattCharacteristics" + mGattCharacteristics);
 
         // Loops through available GATT Services.
         for (BluetoothGattService gattService : gattServices) {
@@ -841,7 +839,7 @@ public class DeviceControlActivity extends Activity {
     public void buttonConnectOnClick(View view) {
 
         mBluetoothLeService.connect(mDeviceAddress);
-        Log.d("TAG", "mDeviceAddress  :   " + mDeviceAddress);
+        Log.d("buttonConnectOnClick", "mDeviceAddress  :   " + mDeviceAddress);
     }
 
     public void buttonDisconnectOnClick(View view) {
@@ -861,11 +859,11 @@ public class DeviceControlActivity extends Activity {
                         EditText editText = item.findViewById(R.id.edit_text);
                         if (editText.getText().toString().length() != 0) {
                             DestinationIDnum = editText.getText().toString();
-                            Log.d("TAG", "DestinationIDnum  :   " + DestinationIDnum);
+                            Log.d("onClick", "DestinationIDnum  :   " + DestinationIDnum);
                             if (DestinationIDnum.equals("1") || DestinationIDnum.equals("2") || DestinationIDnum.equals("3") || DestinationIDnum.equals("4") || DestinationIDnum.equals("5")
                                     || DestinationIDnum.equals("6") || DestinationIDnum.equals("7") || DestinationIDnum.equals("8") || DestinationIDnum.equals("9") || DestinationIDnum.equals("0")) {
                                 DestinationIDdata = editText.getText().toString();
-                                Log.d("TAG", "DestinationIDdata:" + DestinationIDdata);
+                                Log.d("onClick", "DestinationIDdata:" + DestinationIDdata);
                             } else {
                                 Toast.makeText(getApplicationContext(), "Destination ID is between 1-9 :", Toast.LENGTH_SHORT).show();
                             }
